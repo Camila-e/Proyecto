@@ -18,8 +18,7 @@ window.requestAnimationFrame =
         };
     })();
 
-window.isDevice = (/android|webos|iphone|ipad|opera mini/i.test(((navigator.userAgent || navigator.vendor || window.opera)).toLowerCase()));
-
+window.isDevice = (/android|webos|iphone|ipad|ipod|opera mini|windows phone|blackberry/i.test(((navigator.userAgent || navigator.vendor || window.opera)).toLowerCase()));
 var loaded = false;
 
 var init = function () {
