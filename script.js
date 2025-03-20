@@ -18,25 +18,33 @@ window.requestAnimationFrame =
     };
   })();
 
-  window.isDevice = (/android|webos|iphone|ipad|ipod|opera mini|windows phone|blackberry/i.test(((navigator.userAgent || navigator.vendor || window.opera)).toLowerCase()));
+window.isDevice = (/android|webos|iphone|ipad|ipod|opera mini|windows phone|blackberry/i.test(((navigator.userAgent || navigator.vendor || window.opera)).toLowerCase()));
+
 var loaded = false;
 var init = function () {
   if (loaded) return;
   loaded = true;
 
   var mobile = window.isDevice;
-  var koef = mobile ? 0.5 : 1;
+  var koef = mobile ? 0.5 : 1; 
   var canvas = document.getElementById('Cami');
   var ctx = canvas.getContext('2d');
-  var width = canvas.width = koef * innerWidth;
-  var height = canvas.height = koef * innerHeight;
-  var rand = Math.random;
 
+  var setCanvasSize = function () {
+    canvas.width = koef * window.innerWidth;
+    canvas.height = koef * window.innerHeight;
+  };
+  setCanvasSize(); 
+
+  window.addEventListener('resize', function () {
+    setCanvasSize();
+  });
+  var rand = Math.random;
   var nameParticles = [];
   var name = "Jordy";
   var fontSize = 60;
-  var nameX = width / 2 - (fontSize * name.length) / 2;
-  var nameY = height / 2;
+  var nameX = canvas.width / 2 - (fontSize * name.length) / 2;
+  var nameY = canvas.height / 2;
 
   for (let i = 0; i < name.length; i++) {
     nameParticles.push({
@@ -46,23 +54,23 @@ var init = function () {
       size: fontSize,
       targetX: nameX + i * fontSize,
       targetY: nameY,
-      alpha: 1, 
+      alpha: 1,
     });
   }
 
   ctx.fillStyle = "rgba(0,0,0,1)";
-  ctx.fillRect(0, 0, width, height);
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   var loop = function () {
     ctx.fillStyle = "rgba(0,0,0,.1)";
-    ctx.fillRect(0, 0, width, height);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     nameParticles.forEach(function (particle) {
-      ctx.fillStyle = `rgba(255, 0, 0, ${particle.alpha})`;  
-      ctx.font = `${particle.size}px italic Arial`; 
+      ctx.fillStyle = `rgba(255, 0, 0, ${particle.alpha})`;
+      ctx.font = `${particle.size}px italic Arial`;
       ctx.fillText(particle.char, particle.x, particle.y);
 
-      particle.alpha -= 0.01;  
+      particle.alpha -= 0.01;
 
       if (particle.alpha <= 0) {
         particle.alpha = 0;
@@ -95,19 +103,19 @@ var init = function () {
 
     var heartPointsCount = pointsOrigin.length;
     var targetPoints = [];
-    
+
     var pulse = function (kx, ky) {
       for (i = 0; i < pointsOrigin.length; i++) {
         targetPoints[i] = [];
-        targetPoints[i][0] = kx * pointsOrigin[i][0] + width / 2;
-        targetPoints[i][1] = ky * pointsOrigin[i][1] + height / 2;
+        targetPoints[i][0] = kx * pointsOrigin[i][0] + canvas.width / 2;
+        targetPoints[i][1] = ky * pointsOrigin[i][1] + canvas.height / 2;
       }
     };
 
     var e = [];
     for (i = 0; i < heartPointsCount; i++) {
-      var x = rand() * width;
-      var y = rand() * height;
+      var x = rand() * canvas.width;
+      var y = rand() * canvas.height;
       e[i] = {
         vx: 0,
         vy: 0,
@@ -134,7 +142,7 @@ var init = function () {
       pulse((1 + n) * 0.5, (1 + n) * 0.5);
       time += ((Math.sin(time)) < 0 ? 9 : (n > 0.8) ? 0.2 : 1) * config.timeDelta;
       ctx.fillStyle = "rgba(0,0,0,.1)";
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       for (i = e.length; i--;) {
         var u = e[i];
@@ -177,7 +185,7 @@ var init = function () {
           ctx.fillRect(u.trace[k].x, u.trace[k].y, 1, 1);
         }
       }
-        
+
       window.requestAnimationFrame(heartLoop, canvas);
     };
 
